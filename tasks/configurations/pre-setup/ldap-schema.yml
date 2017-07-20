@@ -1,0 +1,18 @@
+
+- name: Copy custom schema LDAP
+  template:
+    src: configuration/schema/custom_schema.json
+    dest: /opt/gluu-server-{{ gluu_version }}/install/community-edition-setup/schema/custom_schema.json
+    mode: 0644
+    owner: root
+    group: root
+  register: ldap_copy_custom_schema
+
+- name: Generate OpenLDAP schema
+  command: "{{ gluu_ssh_command }} 'cd /install/community-edition-setup/schema/ && python manager.py --type openldap --filename custom_schema.json autogenerate'"
+  when: ldap_copy_custom_schema.changed
+
+- name: Generate OpenDJ schema
+  command: "{{ gluu_ssh_command }} 'cd /install/community-edition-setup/schema/ && python manager.py --type opendj --filename custom_schema.json autogenerate'"
+  when: ldap_copy_custom_schema.changed
+  

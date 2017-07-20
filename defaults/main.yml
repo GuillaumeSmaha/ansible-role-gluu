@@ -1,0 +1,337 @@
+---
+# Define a custom version of the package to install.
+# To get a list of available package versions visit: https://gluu.org/docs/ce/
+#
+# Example:
+#
+#   gluu_version: 3.0.0
+#   gluu_version: 3.0.1
+#   gluu_version: 3.0.2
+#
+gluu_version: 3.0.2
+
+gluu_hostname: localgluu
+
+gluu_hostname_for_external_oxauth: '{{ gluu_hostname }}'
+
+gluu_ip: '{{ ansible_default_ipv4.address }}'
+
+gluu_jks_password:
+gluu_ldap_password:
+gluu_inum_base: '@!AAAA.BBBB.CCCC.DDDD'
+gluu_inum_org: '{{ gluu_inum_base }}!0001!2212.0010'
+gluu_inum_appliance: '{{ gluu_inum_base }}!0002!2212.0020'
+
+
+gluu_certificate:
+  org_name: MyOrganization
+  country_code: CA
+  city: Montreal
+  state: QC
+
+
+gluu_appliances:
+  gluuScimEnabled: 'enabled'
+  gluuPassportEnabled: 'enabled'
+  passwordResetAllowed: 'enabled'
+  gluuOrgProfileMgt: 'enabled'
+  gluuVdsCacheRefreshPollingInterval: 60
+  gluuVdsCacheRefreshEnabled: 'enabled'
+  oxTrustCacheRefreshServerIpAddress: '{{ gluu_ip }}'
+
+
+gluu_oxtrust_json_operations:
+  oxTrustConfCacheRefresh:
+    - insertOrReplace:
+        path: '/keyAttributes'
+        value:
+          - uid
+    - insertOrReplace:
+        path: '/keyObjectClasses'
+        value:
+          - person
+    - insertOrReplace:
+        path: '/sourceAttributes'
+        value:
+          - uid
+          - givenName
+          - sn
+          - mail
+          - cn
+    - insertOrReplace:
+        path: '/ldapSearchSizeLimit'
+        value: 1000
+    - insertOrReplace:
+        path: '/customLdapFilter'
+        value: (enabled=TRUE)
+    - insertOrReplace:
+        path: '/attributeMapping'
+        value:
+          - source: uid
+            destination: uid
+          - source: givenName
+            destination: givenName
+          - source: mail
+            destination: mail
+          - source: displayName
+            destination: displayName
+          - source: cn
+            destination: cn
+    - insertOrReplace:
+        path: '/snapshotMaxCount'
+        value: 5
+    - insertOrReplace:
+        path: '/defaultInumServer'
+        value: false
+    - insertOrReplace:
+        path: '/keepExternalPerson'
+        value: true
+    - insertOrReplace:
+        path: '/updateMethod'
+        value: 'copy'
+    - insertOrReplace:
+        path: '/sourceConfigs'
+        value: 
+          - configId: LDAP
+            bindDN:  uid=gluu,ou=users,o=organization
+            bindPassword: password
+            servers: 
+              - ldap.orga.com
+            baseDNs: 
+              - o=organization
+            maxConnections: 3
+            useSSL: true
+            useAnonymousBind: false
+            enabled: true
+            level: 0
+            version: 0
+
+
+gluu_oxauth_json_operations:
+  oxAuthConfDynamic:
+    - insertOrReplace:
+        path: '/shortLivedAccessTokenLifetime'
+        value: 1800
+    - insertOrReplace:
+        path: '/longLivedAccessTokenLifetime'
+        value: 31536000
+    - insertOrReplace:
+        path: '/idTokenLifetime'
+        value: 1800
+    - insertOrReplace:
+        path: '/umaRequesterPermissionTokenLifetime'
+        value: 1800
+    - insertOrReplace:
+        path: '/defaultSubjectType'
+        value: 'public'
+    - insertOrReplace:
+        path: '/legacyIdTokenClaims'
+        value: true
+    - insertOrReplace:
+        path: '/sessionIdUnusedLifetime'
+        value: 43200
+    - insertOrReplace:
+        path: '/sessionIdUnauthenticatedUnusedLifetime'
+        value: 600
+    - insertOrReplace:
+        path: '/uiLocalesSupported'
+        value:
+          - fr
+          - en
+    - insertOrReplace:
+        path: '/dynamicRegistrationCustomAttributes'
+        value:
+          - oxAuthTrustedClient
+    - insertOrReplace:
+        path: '/clientAuthenticationFilters'
+        value:
+          -
+    - insertOrReplace:
+        path: '/ScimProperties'
+        value:
+          maxCount: 200
+    - insertOrReplace:
+        path: '/issuer'
+        value: 'https://{{ gluu_hostname_for_external_oxauth }}'
+    - insertOrReplace:
+        path: '/authorizationPage'
+        value: 'https://{{ gluu_hostname_for_external_oxauth }}/oxauth/authorize'
+    - insertOrReplace:
+        path: '/authorizationEndpoint'
+        value: 'https://{{ gluu_hostname_for_external_oxauth }}/oxauth/seam/resource/restv1/oxauth/authorize'
+    - insertOrReplace:
+        path: '/tokenEndpoint'
+        value: 'https://{{ gluu_hostname_for_external_oxauth }}/oxauth/seam/resource/restv1/oxauth/token'
+    - insertOrReplace:
+        path: '/userInfoEndpoint'
+        value: 'https://{{ gluu_hostname_for_external_oxauth }}/oxauth/seam/resource/restv1/oxauth/userinfo'
+    - insertOrReplace:
+        path: '/clientInfoEndpoint'
+        value: 'https://{{ gluu_hostname_for_external_oxauth }}/oxauth/seam/resource/restv1/oxauth/clientinfo'
+    - insertOrReplace:
+        path: '/checkSessionIFrame'
+        value: 'https://{{ gluu_hostname_for_external_oxauth }}/oxauth/opiframe'
+    - insertOrReplace:
+        path: '/endSessionEndpoint'
+        value: 'https://{{ gluu_hostname_for_external_oxauth }}/oxauth/seam/resource/restv1/oxauth/end_session'
+    - insertOrReplace:
+        path: '/jwksUri'
+        value: 'https://{{ gluu_hostname_for_external_oxauth }}/oxauth/seam/resource/restv1/oxauth/jwk'
+    - insertOrReplace:
+        path: '/registrationEndpoint'
+        value: 'https://{{ gluu_hostname_for_external_oxauth }}/oxauth/seam/resource/restv1/oxauth/register'
+    - insertOrReplace:
+        path: '/openIdDiscoveryEndpoint'
+        value: 'https://{{ gluu_hostname_for_external_oxauth }}/.well-known/webfinger'
+    - insertOrReplace:
+        path: '/openIdConfigurationEndpoint'
+        value: 'https://{{ gluu_hostname_for_external_oxauth }}/.well-known/openid-configuration'
+    - insertOrReplace:
+        path: '/introspectionEndpoint'
+        value: 'https://{{ gluu_hostname_for_external_oxauth }}/oxauth/seam/resource/restv1/introspection'
+    - insertOrReplace:
+        path: '/idGenerationEndpoint'
+        value: 'https://{{ gluu_hostname_for_external_oxauth }}/oxauth/oxauth/restv1/id'
+
+
+gluu_attributes:
+  -
+    inum: '2213'
+    displayName: Last Connection Date
+    gluuAttributeName: oxLastLogonTime
+    gluuAttributeOrigin: gluuPerson
+    gluuAttributeType: generalizedTime
+    gluuAttributeViewType:
+      - user
+      - admin
+    gluuAttributeEditType:
+      - user
+    gluuStatus: active
+    oxAuthClaimName: lastConnectionAt
+    oxMultivaluedAttribute: false
+    oxSCIMCustomAttribute: false
+    gluuSAML1URI: urn:mace:dir:attribute-def:oxLastLogonTime
+    gluuSAML2URI: oxAttribute:210
+    description: Last Connection Date
+  -
+    inum: '2214'
+    displayName: Creation Date
+    gluuAttributeName: oxCreationTimestamp
+    gluuAttributeOrigin: gluuPerson
+    gluuAttributeType: generalizedTime
+    gluuAttributeViewType:
+      - user
+      - admin
+    gluuAttributeEditType:
+      - user
+    gluuStatus: active
+    oxAuthClaimName: createdAt
+    oxMultivaluedAttribute: false
+    oxSCIMCustomAttribute: false
+    gluuSAML1URI: urn:mace:dir:attribute-def:oxCreationTimestamp
+    gluuSAML2URI: oxAttribute:196
+    description: Creation Date
+
+
+gluu_openid_connect_clients:
+  -
+    displayName: Admin Client
+    oxAuthClientSecret: adminc_client
+    inum: '2212.0010'
+    oxAuthGrantType: implicit
+    oxAuthAppType: native
+    oxAuthResponseType:
+      - id_token
+      - token
+    oxAuthScope:
+      - '341A'
+      - '764C'
+      - 'F0C4'
+      - 'C4F5.F66C'
+      - '43F1'
+      - '6D98'
+      - '6D99'
+      - '10B2'
+    oxAuthTokenEndpointAuthMethod: client_secret_basic
+    oxAuthTrustedClient: true
+    oxAuthSubjectType: public
+    oxAuthLogoutSessionRequired: true
+    oxPersistClientAuthorizations: false
+  -
+    displayName: Webpage Client
+    oxAuthClientSecret: web_client
+    inum: '2212.0030'
+    oxAuthGrantType: implicit
+    oxAuthAppType: web
+    oxAuthResponseType:
+      - id_token
+      - token
+    oxAuthScope:
+      - '341A'
+      - '764C'
+      - 'F0C4'
+      - '43F1'
+      - '10B2'
+    oxAuthTokenEndpointAuthMethod: client_secret_basic
+    oxAuthTrustedClient: true
+    oxAuthSubjectType: public
+    oxAuthLogoutSessionRequired: true
+    oxPersistClientAuthorizations: false
+    oxAuthPostLogoutRedirectURI:
+      - https://website/welcome
+    oxAuthRedirectURI:
+      - https://website/welcome
+      - https://website/authorize
+
+
+gluu_openid_connect_scopes:
+  -
+    displayName: openid
+    inum: 'F0C4'
+    defaultScope: true
+    description: A persistent but non-identifiable correlation key released by your OpenID Provider.
+    oxScopeType: openid
+    oxAuthClaim: 
+      - '29DA'
+      - '2213'
+      - '2214'
+
+
+gluu_groups:
+   -
+     inum: '0010'
+     displayName: User Group
+     gluuGroupVisibility: private
+     gluuStatus: active
+
+gluu_users:
+   -
+     inum: '0000.1111.0010'
+     uid: user
+     userPassword: test
+     displayName: My User
+     givenName: My
+     sn: user
+     mail: myuser@organization
+     gluuStatus: active
+     memberOf:
+      - '0010'
+
+gluu_scripts:
+  -
+    # Next version: uma_rpt_policy
+    displayName: uma_authorization_policy
+    description: UMA Authorization policy
+    gluuStatus: 'true'
+    oxModuleProperty: 
+      - '{"value1":"location_type","value2":"ldap","description":""}'
+    oxConfigurationProperty:
+      - ' {"value1":"allowed_clients","value2":"{{ gluu_inum_org }}!0008!2212.0010","description":""}'
+    oxLevel: 100
+    programmingLanguage: python
+    oxScriptType: uma_authorization_policy
+    oxScript: "{{ lookup('template', 'templates/scripts/UmaAuthorization/UmaAuthorization.py') | b64encode }}"
+
+
+gluu_ssh_command: ssh -o IdentityFile=/etc/gluu/keys/gluu-console -o Port=60022 -o LogLevel=QUIET -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o PubkeyAuthentication=yes root@localhost 
+

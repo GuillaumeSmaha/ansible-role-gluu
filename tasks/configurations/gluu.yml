@@ -1,0 +1,12 @@
+
+
+
+- name: Update Global Configuration
+  ldap_attr:
+    params: "{{ ldap_params }}"
+    dn: "inum={{ gluu_inum_appliance }},ou=appliances,o=gluu"
+    name: "{{ item.key }}"
+    state: exact
+    values: "{{ item.value }}"
+  with_dict:
+    "{{ gluu_appliances }}" 

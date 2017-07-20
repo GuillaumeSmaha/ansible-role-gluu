@@ -1,0 +1,51 @@
+---
+- name: Install global python requirements
+  pip: name={{item}} state=present
+  with_items:
+    - dpath
+    - pyDes
+    - python-ldap
+
+- name: Check if Gluu is already setup
+  stat:
+    path: /opt/gluu-server-{{ gluu_version }}/install/community-edition-setup/setup.properties.last
+  register: gluu_is_setup
+
+- name: Copy Gluu Setup Configuration
+  template:
+    src: configuration/setup.properties.j2
+    dest: /opt/gluu-server-{{ gluu_version }}/install/community-edition-setup/setup.properties
+    mode: 0644
+    owner: root
+    group: root
+  when: gluu_is_setup.stat.exists == False
+
+- include: configurations/pre-setup/ldap-schema.yml
+  when: gluu_is_setup.stat.exists == False
+
+- name: Setup Gluu Configuration
+  command: "{{ gluu_ssh_command }} 'cd /install/community-edition-setup/ && ./setup.py -n -f ./setup.properties -d /install/community-edition-setup'"
+  when: gluu_is_setup.stat.exists == False
+
+- include: configurations/get-configuration.yml
+
+- include: configurations/gluu.yml
+
+- include: configurations/oxtrust.yml
+
+- include: configurations/oxauth.yml
+
+- include: configurations/attributes.yml
+
+- include: configurations/scripts.yml
+
+- include: configurations/groups.yml
+
+- include: configurations/users.yml
+
+- include: configurations/open-id-connect-clients.yml
+
+- include: configurations/open-id-connect-scopes.yml
+
+- debug:
+    msg: "Administrator Password for Gluu GUI: {{ gluu_ldap_admin_password }}"
