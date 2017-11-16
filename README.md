@@ -3,14 +3,16 @@ Deprecated
 
 **Note: This project is deprecated**
 
+
 This role was splitted into mutiple roles:
 
 - https://github.com/GuillaumeSmaha/ansible-role-gluu-cluster-manager
 - https://github.com/GuillaumeSmaha/ansible-role-gluu-setup
 - https://github.com/GuillaumeSmaha/ansible-role-gluu-configuration
 - https://github.com/GuillaumeSmaha/ansible-role-gluu-customization
-- https://github.com/GuillaumeSmaha/ansible-gluu-playbook
 
+You can find playbook examples at:
+- https://github.com/GuillaumeSmaha/ansible-gluu-playbook
 
 Gluu
 =========
