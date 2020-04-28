@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# (c) 2017, Guillaume Smaha <guillaume.smaha@gmail.com>
+# (c) 2017, Guillaume Smaha
 #
 ANSIBLE_METADATA = {'metadata_version': '1.0',
                     'status': ['preview'],
